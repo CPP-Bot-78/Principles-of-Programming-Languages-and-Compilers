@@ -1,7 +1,7 @@
 %option noyywrap
 
 %{
-#include "bison.h"
+#include "bison.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,5 +36,9 @@ int lines=0;
 "<" {return LEFTSYMBOL;}
 ">" {return RIGHTSYMBOL;}
 "/" {return ENDSYMBOL;}
-"\"" = {return QUOTES;}
+"\"" {return QUOTES;}
+"<!--" {return STARTCOMMENT;}
+"-->" {return ENDCOMMENT;}
+
+
 %%
