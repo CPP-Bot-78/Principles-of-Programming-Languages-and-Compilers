@@ -10,10 +10,10 @@ int words=0;
 int lines=0;
 %}
 
-%%
 nums ([0-9])+
-strings ([a-zA-Z])+
+strings ([a-zA-Z])+  //    string (\\.|[^\"])* 
 
+%%
 "LinearLayout" {return LINEAR;}
 "RelativeLayout" {return RELATIVE;}
 "TextView" {return TEXTVIEW;}
@@ -41,6 +41,6 @@ strings ([a-zA-Z])+
 "\"" {return QUOTES;}
 "<!--" {return STARTCOMMENT;}
 "-->" {return ENDCOMMENT;}
-
-
+{nums}   { yylval.integer = atoi(yytext); return POSINT; }
+{strings} { yylval.string = strdup(yytext); return STRING; }
 %%
