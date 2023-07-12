@@ -8,10 +8,12 @@
 int chars=0;
 int words=0;
 int lines=0;
-
 %}
 
 %%
+nums ([0-9])+
+strings ([a-zA-Z])+
+
 "LinearLayout" {return LINEAR;}
 "RelativeLayout" {return RELATIVE;}
 "TextView" {return TEXTVIEW;}
