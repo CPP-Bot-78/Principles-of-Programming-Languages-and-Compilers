@@ -1,7 +1,7 @@
 %option noyywrap
 
 %{
-#include "myParser.tab.h"
+#include "bison.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,8 +10,9 @@ int words=0;
 int lines=0;
 
 %}
+
 %%
-"LinearLayou" {return LINEAR;}
+"LinearLayout" {return LINEAR;}
 "RelativeLayout" {return RELATIVE;}
 "TextView" {return TEXTVIEW;}
 "ImageView" {return IMAGEVIEW;}
@@ -35,9 +36,5 @@ int lines=0;
 "<" {return LEFTSYMBOL;}
 ">" {return RIGHTSYMBOL;}
 "/" {return ENDSYMBOL;}
-\" = {return QUOTES;}
-
-
-
-
+"\"" = {return QUOTES;}
 %%
