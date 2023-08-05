@@ -35,6 +35,7 @@ strings ([a-zA-Z])+  //    string (\\.|[^\"])*
 "android:max" {return MAX;}
 "android:progress" {return PROGRESS;}
 
+"=" {return EQUAL}
 "<" {return LEFTSYMBOL;}
 ">" {return RIGHTSYMBOL;}
 "/" {return ENDSYMBOL;}
