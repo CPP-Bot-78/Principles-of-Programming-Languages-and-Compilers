@@ -7,11 +7,12 @@
 #include <string.h>
 //int chars=0;  not used
 //int words=0;
-//int lines=0;
+//int lines=0; //string (\\.|[^\"])*
 %}
 
 nums ([0-9])+
-strings ([a-zA-Z])+  //    string (\\.|[^\"])* 
+strings ([a-zA-Z])+       
+white_spaces [\t\n]
 
 %%
 "LinearLayout" {return LINEAR;}
@@ -42,6 +43,10 @@ strings ([a-zA-Z])+  //    string (\\.|[^\"])*
 "\"" {return QUOTES;}
 "<!--" {return STARTCOMMENT;}
 "-->" {return ENDCOMMENT;}
-{nums}   { yylval.integer = atoi(yytext); return POSINT; } //yylval: θέτει τιμή για χρήση στα actions
-{strings} { yylval.string = strdup(yytext); return STRING; }
+{nums}   { return POSINT;} //yylval: θέτει τιμή για χρήση στα actions
+{strings} { return STRING;}
+{white_spaces} {/* Ignore whitespaces. */}
 %%
+
+//{nums}   { yylval.integer = atoi(yytext); return POSINT; } //yylval: θέτει τιμή για χρήση στα actions
+//{strings} { yylval.string = strdup(yytext); return STRING; }

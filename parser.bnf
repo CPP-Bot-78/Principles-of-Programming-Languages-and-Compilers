@@ -1,0 +1,65 @@
+<root_layout> ::= <linear_layout> | <relative_layout>
+ 
+<must_atributes> ::= android:layout_width="(<string> | <int>)"
+     				 android:layout_height="(<string> | <int>)"
+ 
+<linear_layout> ::= <LinearLayout <must_atributes>
+						[android:id="(<string>)"]
+						[android:orientation="(<string>)"]>
+        				 <elements>|<linear_layout>
+        				{<elements>|<linear_layout>}
+ 					</LinearLayout>
+ 
+<relative_layout> ::= <RelativeLayout <must_atributes>
+ 							[android:id="(<string>)">
+                            {<elements>|<relative_layout>}
+            			</RelativeLayout>]
+ 
+<elements> ::= <text_view> | <image_view> | <button> | <radio_group> | <progress_bar>
+ 
+<string> ::= <alphanum_int> | (<letter>|<number_digit>)
+ 
+<letter> ::=  a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z
+ 
+<number_digit> ::= <number_digit> | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+ 
+<int> ::= [-]<int> | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+ 
+<text_view> ::= <TextView <must_atributes>
+			         android:text="(<string>)"
+         			 [android:id="(<string>)"]
+        			 [android:textColor="(<string>)"]/>
+
+<image_view> ::=   <ImageView <must_atributes>
+			            android:src="(<string>)"
+				       	[android:id="(<string>)"]
+				     	[android:padding="(<int>)"]/>
+
+<button> ::=  <Button <must_atributes>
+		        	android:text="(<string>)"
+			  		[android:id="(<string>)"]
+		            [android:padding="(<int>)"]/>
+
+<radio_group> ::=  <RadioGroup <must_atributes>
+			            <radio_button>
+				        [android:id="(<string>)"]
+  				        [android:checkedButton="(<string>)"]/>
+
+ <radio_button> ::= <RadioButton <must_atributes>
+		                android:text="(<string>)"
+			            [android:id="(<string>)"]/>
+
+<progress_bar> ::= <ProgressBar <must_atributes>
+		 	 	      [android:id="(<string>)"]
+			          [android:max="(<int>)"]
+				      [android:progress="(<int>)"]/>
+
+
+	Σημειογραφία:
+::=		ορισμός
+|		εναλλακτικός κανόνας (αυτό ή αυτό)
+<...>		μη τερματικό σύμβολο
+σύμβολο	τερματικό σύμβολο
+[...]		προαιρετικό (0 ή 1 φορές)
+{...}		0 ή περισσότερες φορές
+(...)		ομαδοποίηση
