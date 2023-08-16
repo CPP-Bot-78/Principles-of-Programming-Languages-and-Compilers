@@ -78,10 +78,10 @@ progress_bar: LEFTSYMBOL PROGRESSBAR must_atributes
 //comment: STARTCOMMENT string ENDCOMMENT
 
 %%
-yyerror(char *error_msg)
+yyerror(const char *error_msg)
 {   
     errors++;
-    printf(stderr, "%s/n", error_msg) //υποχρεωτική στο μεταπροόγραμμα bison, καλείται όταν συνακτικό σφάλμα
+    printf(stderr, "Σφάλμα στην σύνταξη %s/n", error_msg) //υποχρεωτική στο μεταπροόγραμμα bison, καλείται όταν συνακτικό σφάλμα
 }
 int main(int argc, char **argv){
 	argv++;
@@ -94,7 +94,7 @@ int main(int argc, char **argv){
 	yyparse();
 	
 	if(errors==0)
-	     printf("Program Complied Succesfully\n"); 
+	     printf("Program Compiled Succesfully\n"); 
 	  
 	return 0;
 }			

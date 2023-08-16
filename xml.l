@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define PrintCode fwrite(yytext, yyleng, yyout)
 //int chars=0;  not used
 //int words=0;
 //int lines=0; //string (\\.|[^\"])*
@@ -15,36 +16,36 @@ strings ([a-zA-Z])+
 white_spaces [\t\n]
 
 %%
-"LinearLayout" {return LINEAR;}
-"RelativeLayout" {return RELATIVE;}
-"TextView" {return TEXTVIEW;}
-"ImageView" {return IMAGEVIEW;}
-"Button" {return BUTTON;}
-"RadioGroup" {return RADIOGROUP;}
-"RadioButton" {return RADIOBUTTON;}
-"ProgressBar" {return PROGRESSBAR;}
+"LinearLayout" {PrintCode; return LINEAR;}
+"RelativeLayout" {PrintCode; return RELATIVE;}
+"TextView" {PrintCode; return TEXTVIEW;}
+"ImageView" {PrintCode; return IMAGEVIEW;}
+"Button" {PrintCode; return BUTTON;}
+"RadioGroup" {PrintCode; return RADIOGROUP;}
+"RadioButton" {PrintCode; return RADIOBUTTON;}
+"ProgressBar" {PrintCode; return PROGRESSBAR;}
 
-"android:layout_width" {return WIDTH;}
-"android:layout_height" {return HEIGHT;}
-"android:id" {return ID;}
-"android:orientation" {return ORIENTATION;}
-"android:text" {return TEXT;}
-"android:textColor" {return TEXTCOLOR;}
-"android:src" {return SRC;}
-"android:padding" {return PADDING;}
-"android:checkedButton" {return CHECKBUTTON;}
-"android:max" {return MAX;}
-"android:progress" {return PROGRESS;}
+"android:layout_width" {PrintCode; return WIDTH;}
+"android:layout_height" {PrintCode; return HEIGHT;}
+"android:id" {PrintCode; return ID;}
+"android:orientation" {PrintCode; return ORIENTATION;}
+"android:text" {PrintCode; return TEXT;}
+"android:textColor" {PrintCode; return TEXTCOLOR;}
+"android:src" {PrintCode; return SRC;}
+"android:padding" {PrintCode; return PADDING;}
+"android:checkedButton" {PrintCode; return CHECKBUTTON;}
+"android:max" {PrintCode; return MAX;}
+"android:progress" {PrintCode; return PROGRESS;}
 
-"=" {return EQUAL}
-"<" {return LEFTSYMBOL;}
-">" {return RIGHTSYMBOL;}
-"/" {return ENDSYMBOL;}
-"\"" {return QUOTES;}
-"<!--" {return STARTCOMMENT;}
-"-->" {return ENDCOMMENT;}
-{nums}   { return POSINT;} //yylval: θέτει τιμή για χρήση στα actions
-{strings} { return STRING;}
+"=" {PrintCode; return EQUAL}
+"<" {PrintCode; return LEFTSYMBOL;}
+">" {PrintCode; return RIGHTSYMBOL;}
+"/" {PrintCode; return ENDSYMBOL;}
+"\"" {PrintCode; return QUOTES;}
+"<!--" {PrintCode; return STARTCOMMENT;}
+"-->" {PrintCode; return ENDCOMMENT;}
+{nums}   {PrintCode; return POSINT;} //yylval: θέτει τιμή για χρήση στα actions
+{strings} {PrintCode; return STRING;}
 {white_spaces} {/* Ignore whitespaces. */}
 %%
 

@@ -1,3 +1,5 @@
+ΔΕΝ ΙΣΧΥΕΙ ΑΥΤΟ ΤΟ ΒΝF (το σωστό στην αναφορά)
+
 <root_layout> ::= <linear_layout> | <relative_layout>
  
 <must_atributes> ::= android:layout_width="(<string> | <int>)"
