@@ -36,6 +36,7 @@ white_spaces [\t\n]
 "android:checkedButton" {PrintCode; return CHECKBUTTON;}
 "android:max" {PrintCode; return MAX;}
 "android:progress" {PrintCode; return PROGRESS;}
+"android:radio_button_number" {PrintCode; return NORADIOBUTTON;} //ερώτημα 3
 
 "=" {PrintCode; return EQUAL}
 "<" {PrintCode; return LEFTSYMBOL;}

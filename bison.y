@@ -4,8 +4,11 @@
 void yyerror(char *);
 extern FILE *yyin;								
 extern FILE *yyout;
-extern yylineno;
-int error;	
+extern yylineno=1;
+int errors;	
+
+char* ids_memory[100];
+int new_id_num=0;
 %}
 
 %token LINEAR RELATIVE TEXTVIEW IMAGEVIEW BUTTON RADIOGROUP RADIOBUTTON PROGRESSBAR 
@@ -13,8 +16,8 @@ int error;
 %token EQUAL LEFTSYMBOL RIGHTSYMBOL ENDSYMBOL QUOTES STARTCOMMENT ENDCOMMENT POSINT STRING
 
 %%
-root_layout: linear_layout
-           | relative_layout
+root_layout: linear_layout 
+           | relative_layout 
            ;
 
 must_atributes: WIDTH EQUAL QUOTES (string|pos_int) QUOTES
@@ -55,6 +58,7 @@ button: LEFTSYMBOL BUTTON must_atributes
             ;
 
 radio_group: LEFTSYMBOL RADIOGROUP must_atributes
+            NORADIOBUTTON EQUAL QUOTES pos_int QUOTES //ερώτημα 3
             [ID EQUAL QUOTES string QUOTES]
             [CHECKBUTTON EQUAL QUOTES string QUOTES] RIGHTSYMBOL
             radio_button
@@ -81,20 +85,32 @@ progress_bar: LEFTSYMBOL PROGRESSBAR must_atributes
 yyerror(const char *error_msg)
 {   
     errors++;
-    printf(stderr, "Σφάλμα στην σύνταξη %s/n", error_msg) //υποχρεωτική στο μεταπροόγραμμα bison, καλείται όταν συνακτικό σφάλμα
+    printf(stderr, "There was a syntax error in line %d: %s/n", yylineno, error_msg); //υποχρεωτική στο μεταπροόγραμμα bison, καλείται όταν συνακτικό σφάλμα
 }
 int main(int argc, char **argv){
 	argv++;
 	argc--;
-	error=0;  
-	if(argc>0)
+	errors=0;  
+	
+    if(argc>0)
 		yyin=fopen(argv[0], "r");
+        if (!yyin){
+            perror("The file could not be opened");
+            return 1;
+        }
 	else
 		yyin=stdin;	
-	yyparse();
 	
-	if(errors==0)
+    yyparse();
+	
+	if(errors==0) {
 	     printf("Program Compiled Succesfully\n"); 
+    }
+    else {
+        printf("%d syntax errors have occured\n", errors);
+    }
 	  
 	return 0;
 }			
+
+//{printf("Successful Parsing! The code you wrote is in the correct form\n");}
