@@ -45,7 +45,8 @@ white_spaces [\t\n]
 "\"" {PrintCode; return QUOTES;}
 "<!--" {PrintCode; return STARTCOMMENT;}
 "-->" {PrintCode; return ENDCOMMENT;}
-{nums}   {PrintCode; return POSINT;} //yylval: θέτει τιμή για χρήση στα actions
+. {PrintCode; return COMMENT_CHAR;}  //οποιαδήποτε χαρακτήρας
+{nums}   {PrintCode; return POSINT;}
 {strings} {PrintCode; return STRING;}
 {white_spaces} {/* Ignore whitespaces. */}
 %%
