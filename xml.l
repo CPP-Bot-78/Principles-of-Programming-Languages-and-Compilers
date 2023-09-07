@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define PrintCode fwrite(yytext, yyleng, yyout)
+#define PrintCode fprintf(yyout, "%.*s", yyleng, yytext)
+//#define PrintCode fwrite(yytext, yyleng, yyout)
 //int chars=0;  not used
 //int words=0;
 //int lines=0; //string (\\.|[^\"])*
@@ -38,7 +39,7 @@ white_spaces [\t\n]
 "android:progress" {PrintCode; return PROGRESS;}
 "android:radio_button_number" {PrintCode; return NORADIOBUTTON;} //ερώτημα 3
 
-"=" {PrintCode; return EQUAL}
+"=" {PrintCode; return EQUAL;}
 "<" {PrintCode; return LEFTSYMBOL;}
 ">" {PrintCode; return RIGHTSYMBOL;}
 "/" {PrintCode; return ENDSYMBOL;}
