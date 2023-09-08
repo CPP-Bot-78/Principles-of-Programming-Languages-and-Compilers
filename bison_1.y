@@ -31,17 +31,7 @@ must_atributes: WIDTH EQUAL QUOTES must_atributes_values QUOTES
                 HEIGHT QUOTES must_atributes_values QUOTES
               ;
 
-must_atributes_values: STRING {
-                            if (strcmp($1, "wrap_content") != 0 && strcmp($1, "match_parent") != 0) {
-                            printf("Error: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
-                            exit(1);
-                        }
-                      }
-                      | POSINT { if ($1 <=0) {
-                            printf("Error: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
-                            exit(1);
-                        }
-                      }
+must_atributes_values: STRING | POSINT
 
 linear_layout: LEFTSYMBOL LINEAR must_atributes
                                  id_feature
@@ -107,61 +97,21 @@ progress_bar: LEFTSYMBOL PROGRESSBAR must_atributes
 comment: STARTCOMMENT comment_string ENDCOMMENT ;
 //_____________________________________________________________________________
 //ορισμός κανώνων προαιρετικών στοιχείων
-id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
-    for (int i=0; i<num_of_ids; i++) {
-        if (strcmp($1, ids_memory[i]==0)) {
-            fprintf(stderr, "Errror: This Id value has been used again. Duplicated Id values cannot be accepted.");
-            exit(1); //έξοδος από το πρόγραμμά με σφάλμα
-            }
-        strncpy(ids_memory[num_of_ids], $1, sizeof(ids_memory[i])); // strncpy(char1,char2,n)
-        num_of_ids++;
-        //$$ = $1; // Επιστροφή της τιμής για χρήση στον κώδικα //XREIAZETAI??
-    }
-};
+id_feature: /*empty*/ | ID EQUAL QUOTES STRING;
 
-radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
-    for (int i=0; i<num_of_ids; i++) {
-        if (strcmp($1, ids_memory[i]==0)) {
-            fprintf(stderr, "Errror: This Id value has been used again. Duplicated Id values cannot be accepted.");
-            exit(1); //έξοδος από το πρόγραμμά με σφάλμα
-            }
-        strncpy(ids_memory[num_of_ids], $1, sizeof(ids_memory[i]));
-        strncpy(ids_memory[num_of_radio_button_ids], $1, sizeof(radio_button_ids_memory[i]));
-        num_of_ids++;
-        num_of_radio_button_ids++;
-        //$$ = $1; // Επιστροφή της τιμής για χρήση στον κώδικα //XREIAZETAI??
-    }
-} QUOTES;
+radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING QUOTES;
 
 orientation_feature: /*empty*/ | ORIENTATION EQUAL QUOTES STRING QUOTES ;
 
 textcolor_feature: /*empty*/ | TEXTCOLOR EQUAL QUOTES STRING QUOTES;
 
-padding_feature: /*empty*/ | PADDING EQUAL QUOTES POSINT { if ($1 <=0) {
-        printf("Error: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
-        exit(1);
-            }
-        }  QUOTES;
+padding_feature: /*empty*/ | PADDING EQUAL QUOTES POSINT  QUOTES;
 
-checkbutton_feature: /*empty*/ | CHECKBUTTON EQUAL QUOTES STRING {
-    for (int i=0; i<num_of_radio_button_ids; i++) {
-        if (strcmp($1, radio_button_ids_memory[i]==0)) {
-            fprintf(stderr, "Errror: This value should much with a RadioButton Id value");
-            exit(1); //έξοδος από το πρόγραμμά με σφάλμα
-            }
-        strncpy(radio_button_ids_memory[num_of_radio_button_ids], $1, sizeof(radio_button_ids_memory[i]));
-        num_of_radio_button_ids++;
-    }
-} QUOTES;
+checkbutton_feature: /*empty*/ | CHECKBUTTON EQUAL QUOTES STRING QUOTES;
 
-max_feature: /*empty*/ | MAX EQUAL QUOTES POSINT {max_value=$1;} QUOTES;
+max_feature: /*empty*/ | MAX EQUAL QUOTES POSINT QUOTES;
 
-progress_feature: /*empty*/ | PROGRESS EQUAL QUOTES POSINT {
-    if ($1<0 || $1>max_value) { 
-        fprintf(stderr, "Errror: This is not an allowed value. The value entered should be between 0 and the max value defined");
-        exit(1); //έξοδος από το πρόγραμμά με σφάλμα
-    }
-} QUOTES;
+progress_feature: /*empty*/ | PROGRESS EQUAL QUOTES POSINT QUOTES;
 //_____________________________________________________________________________
 //ορισμός κανώνων για στοιχεία που μπορούν να εμφανιστούν 0 ή πολλαπλές φορές
 elements_null_or_more: /*empty*/ | elements_null_or_more | elements ;
