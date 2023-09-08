@@ -176,7 +176,7 @@ linear_layout_one_or_more: linear_layout_one_or_more | linear_layout ;
 yyerror(const char *error_msg)
 {   
     errors++;
-    printf(stderr, "There was a syntax error in line %d: %s/n", new_line, error_msg); //υποχρεωτική συνάρτηση στο μεταπροόγραμμα bison, καλείται όταν υπάρχει συνακτικό σφάλμα
+    fprintf(stderr, "There was a syntax error in line %d: %s/n", new_line, error_msg); //υποχρεωτική συνάρτηση στο μεταπροόγραμμα bison, καλείται όταν υπάρχει συνακτικό σφάλμα
 }
 int main(int argc, char **argv){
 	//argv++;

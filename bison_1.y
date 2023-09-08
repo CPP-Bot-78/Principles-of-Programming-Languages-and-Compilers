@@ -21,22 +21,23 @@ int max_value;
 %token WIDTH HEIGHT ID ORIENTATION TEXT TEXTCOLOR SRC PADDING CHECKBUTTON MAX PROGRESS 
 %token EQUAL LEFTSYMBOL RIGHTSYMBOL ENDSYMBOL QUOTES STARTCOMMENT ENDCOMMENT POSINT STRING
 %token NORADIOBUTTON COMMENT_CHAR
+%start root_layout
 
 %%
-root_layout: linear_layout 
+root_layout: linear_layout
            | relative_layout 
            ;
 
 must_atributes: WIDTH EQUAL QUOTES must_atributes_values QUOTES
-                HEIGHT QUOTES must_atributes_values QUOTES
+                HEIGHT EQUAL QUOTES must_atributes_values QUOTES
               ;
 
-must_atributes_values: STRING | POSINT
+must_atributes_values: STRING | POSINT ;
 
 linear_layout: LEFTSYMBOL LINEAR must_atributes
                                  id_feature
                                  orientation_feature RIGHTSYMBOL
-                                 elements_one_or_more
+                                 linear_elements_one_or_more
                 LEFTSYMBOL ENDSYMBOL LINEAR RIGHTSYMBOL
              |  LEFTSYMBOL LINEAR must_atributes
                                  id_feature
@@ -56,10 +57,11 @@ relative_layout: LEFTSYMBOL RELATIVE must_atributes
                  ;
 
 elements: text_view | image_view | button | radio_group | progress_bar;
+linear_elements: text_view | image_view | button | radio_group | progress_bar |relative_layout;
 
 text_view: LEFTSYMBOL TEXTVIEW must_atributes
-           TEXT EQUAL QUOTES STRING QUOTES
            id_feature
+           TEXT EQUAL QUOTES STRING QUOTES
            textcolor_feature ENDSYMBOL RIGHTSYMBOL
            ;
 
@@ -76,16 +78,16 @@ button: LEFTSYMBOL BUTTON must_atributes
             ;
 
 radio_group: LEFTSYMBOL RADIOGROUP must_atributes
-            NORADIOBUTTON EQUAL QUOTES POSINT QUOTES //ερώτημα 3
             id_feature
             checkbutton_feature RIGHTSYMBOL
-            radio_button
-            LEFTSYMBOL RADIOGROUP ENDSYMBOL RIGHTSYMBOL
+            radio_button_one_or_more
+            LEFTSYMBOL ENDSYMBOL RADIOGROUP RIGHTSYMBOL
             ;
 
 radio_button: LEFTSYMBOL RADIOBUTTON must_atributes
+              radio_button_id_feature
               TEXT EQUAL QUOTES STRING QUOTES
-              radio_button_id_feature ENDSYMBOL RIGHTSYMBOL
+              ENDSYMBOL RIGHTSYMBOL
               ;
 
 progress_bar: LEFTSYMBOL PROGRESSBAR must_atributes
@@ -97,7 +99,7 @@ progress_bar: LEFTSYMBOL PROGRESSBAR must_atributes
 comment: STARTCOMMENT comment_string ENDCOMMENT ;
 //_____________________________________________________________________________
 //ορισμός κανώνων προαιρετικών στοιχείων
-id_feature: /*empty*/ | ID EQUAL QUOTES STRING;
+id_feature: /*empty*/ | ID EQUAL QUOTES STRING QUOTES;
 
 radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING QUOTES;
 
@@ -105,7 +107,7 @@ orientation_feature: /*empty*/ | ORIENTATION EQUAL QUOTES STRING QUOTES ;
 
 textcolor_feature: /*empty*/ | TEXTCOLOR EQUAL QUOTES STRING QUOTES;
 
-padding_feature: /*empty*/ | PADDING EQUAL QUOTES POSINT  QUOTES;
+padding_feature: /*empty*/ | PADDING EQUAL QUOTES POSINT QUOTES;
 
 checkbutton_feature: /*empty*/ | CHECKBUTTON EQUAL QUOTES STRING QUOTES;
 
@@ -114,19 +116,21 @@ max_feature: /*empty*/ | MAX EQUAL QUOTES POSINT QUOTES;
 progress_feature: /*empty*/ | PROGRESS EQUAL QUOTES POSINT QUOTES;
 //_____________________________________________________________________________
 //ορισμός κανώνων για στοιχεία που μπορούν να εμφανιστούν 0 ή πολλαπλές φορές
-elements_null_or_more: /*empty*/ | elements_null_or_more | elements ;
-relative_layout_null_or_more: /*empty*/ | relative_layout_null_or_more | relative_layout ;
-comment_string:  /*empty*/ | comment_string | COMMENT_CHAR;
+elements_null_or_more: /*empty*/ | elements_null_or_more  elements | elements ;
+relative_layout_null_or_more: /*empty*/ | relative_layout_null_or_more relative_layout | relative_layout ;
+comment_string:  /*empty*/| comment_string COMMENT_CHAR | comment_string ;
 //______________________________________________________________________________
 //ορισμός κανώνων για στοιχεία που πρέπει να εμφανιστούν 1 ή περισσότερες φορές
-elements_one_or_more: elements_null_or_more | elements;
-linear_layout_one_or_more: linear_layout_one_or_more | linear_layout ;
+elements_one_or_more: elements | elements_one_or_more elements;
+linear_elements_one_or_more: linear_elements | linear_elements_one_or_more linear_elements;
+linear_layout_one_or_more: linear_layout_one_or_more linear_layout | linear_layout;
+radio_button_one_or_more: radio_button_one_or_more radio_button | radio_button;
 
 %%
 yyerror(const char *error_msg)
 {   
     errors++;
-    printf(stderr, "There was a syntax error in line %d: %s/n", new_line, error_msg); //υποχρεωτική συνάρτηση στο μεταπροόγραμμα bison, καλείται όταν υπάρχει συνακτικό σφάλμα
+    fprintf(stderr, "There was a syntax error in line %d: %s\n", new_line, error_msg); //υποχρεωτική συνάρτηση στο μεταπροόγραμμα bison, καλείται όταν υπάρχει συνακτικό σφάλμα
 }
 int main(int argc, char **argv){
 	//argv++;

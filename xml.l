@@ -51,7 +51,7 @@ newline [\n]+
 . {PrintCode; return COMMENT_CHAR;}  //οποιαδήποτε χαρακτήρας
 {nums}   {PrintCode; return POSINT;}
 {strings} {PrintCode; return STRING;}
-\n {new_line++;} 
+\n {new_line++;printf("\n");} 
 {white_space} {;/* Ignore whitespaces. */}
 %%
 

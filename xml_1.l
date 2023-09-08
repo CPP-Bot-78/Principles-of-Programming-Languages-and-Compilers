@@ -14,9 +14,9 @@ int new_line=1;
 %}
 
 nums ([0-9])+
-strings ([a-zA-Z])+       
-white_space [ \t]+
-newline [\n]+
+strings ([a-zA-Z_0-9 ])+       
+white_space (\t)+
+newline ([\n])
 
 %%
 "LinearLayout" {PrintCode; return LINEAR;}
@@ -51,7 +51,7 @@ newline [\n]+
 . {PrintCode; return COMMENT_CHAR;}  //οποιαδήποτε χαρακτήρας
 {nums}   {PrintCode; return POSINT;}
 {strings} {PrintCode; return STRING;}
-\n {new_line++;} 
+\n {new_line++;printf("\n");} 
 {white_space} {;/* Ignore whitespaces. */}
 %%
 
