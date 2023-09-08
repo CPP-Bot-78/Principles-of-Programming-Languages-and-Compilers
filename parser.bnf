@@ -1,67 +1,58 @@
-ΔΕΝ ΙΣΧΥΕΙ ΑΥΤΟ ΤΟ ΒΝF (το σωστό στην αναφορά)
-
 <root_layout> ::= <linear_layout> | <relative_layout>
  
-<must_atributes> ::= android:layout_width="(<string> | <int>)"
-     				 android:layout_height="(<string> | <int>)"
+<must_atributes> ::= android:layout_width="(<string> | <pos_int>)"
+     android:layout_height="(<string> | <pos_int>)"
  
 <linear_layout> ::= <LinearLayout <must_atributes>
-						[android:id="(<string>)"]
-						[android:orientation="(<string>)"]>
-        				 <elements>|<linear_layout>
-        				{<elements>|<linear_layout>}
- 					</LinearLayout>
+[android:id="<string>"]
+[android:orientation="<string>"]>
+       (<elements>|<linear_layout>)+
+ </LinearLayout>
  
 <relative_layout> ::= <RelativeLayout <must_atributes>
- 							[android:id="(<string>)">
-                            {<elements>|<relative_layout>}
-            			</RelativeLayout>]
+ [android:id="<string>"]>
+                                            	     	 {<elements>|<relative_layout>}
+            </RelativeLayout>
  
 <elements> ::= <text_view> | <image_view> | <button> | <radio_group> | <progress_bar>
  
-<string> ::= <alphanum_int> | (<letter>|<number_digit>)
- 
-<letter> ::=  a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z
- 
-<number_digit> ::= <number_digit> | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
- 
-<int> ::= [-]<int> | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
- 
 <text_view> ::= <TextView <must_atributes>
-			         android:text="(<string>)"
-         			 [android:id="(<string>)"]
-        			 [android:textColor="(<string>)"]/>
+			         android:text="<string>"
+         [android:id="<string>"]
+         [android:textColor="<string>"]/>
 
 <image_view> ::=   <ImageView <must_atributes>
-			            android:src="(<string>)"
-				       	[android:id="(<string>)"]
-				     	[android:padding="(<int>)"]/>
+			                   android:src="<string>"
+				     [android:id="<string>"]
+				     [android:padding="<pos_int>"]/>
 
 <button> ::=  <Button <must_atributes>
-		        	android:text="(<string>)"
-			  		[android:id="(<string>)"]
-		            [android:padding="(<int>)"]/>
+		              android:text="<string>"
+			 [android:id="<string>"]
+		             [android:padding="<pos_int>"]/>
 
 <radio_group> ::=  <RadioGroup <must_atributes>
-			            <radio_button>
-				        [android:id="(<string>)"]
-  				        [android:checkedButton="(<string>)"]/>
+				      [android:id="<string>"]
+  				      [android:checkedButton="<string>"]>
+			                   <radio_button>
+<RadioGroup/>
 
  <radio_button> ::= <RadioButton <must_atributes>
-		                android:text="(<string>)"
-			            [android:id="(<string>)"]/>
+		                                    android:text="<string>"
+			                       [android:id="<string>"]/>
 
 <progress_bar> ::= <ProgressBar <must_atributes>
-		 	 	      [android:id="(<string>)"]
-			          [android:max="(<int>)"]
-				      [android:progress="(<int>)"]/>
+		 	 	      [android:id="<string>"]
+			                   [android:max="<pos_int>"]
+				      [android:progress="<pos_int>"]/>
+<string> ::= {<letter> | <number_digit>}
+<text> ::= {<letter> | <number_digit> | <symbol>}
 
 
-	Σημειογραφία:
-::=		ορισμός
-|		εναλλακτικός κανόνας (αυτό ή αυτό)
-<...>		μη τερματικό σύμβολο
-σύμβολο	τερματικό σύμβολο
-[...]		προαιρετικό (0 ή 1 φορές)
-{...}		0 ή περισσότερες φορές
-(...)		ομαδοποίηση
+<letter> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z | A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
+<number_digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+<symbol> ::= ! | # | $ | % | ... | & | ( | ) | * | ... | /
+
+<integer> ::= <number_digit>+
+
+<comment> ::= <!-- <text> -->

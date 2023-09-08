@@ -4,7 +4,8 @@
 void yyerror(char *);
 extern FILE *yyin;								
 extern FILE *yyout;
-extern yylineno;//extern yylineno=1;
+extern int yylineno;//extern yylineno=1;
+extern int new_line;
 int errors;	
 
 char* ids_memory[100];
@@ -103,7 +104,7 @@ progress_bar: LEFTSYMBOL PROGRESSBAR must_atributes
               progress_feature ENDSYMBOL RIGHTSYMBOL
               ;
 
-comment: STARTCOMMENT comment_string ENDCOMMENT
+comment: STARTCOMMENT comment_string ENDCOMMENT ;
 //_____________________________________________________________________________
 //ορισμός κανώνων προαιρετικών στοιχείων
 id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
@@ -116,7 +117,7 @@ id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
         num_of_ids++;
         //$$ = $1; // Επιστροφή της τιμής για χρήση στον κώδικα //XREIAZETAI??
     }
-}
+};
 
 radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
     for (int i=0; i<num_of_ids; i++) {
@@ -130,17 +131,17 @@ radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
         num_of_radio_button_ids++;
         //$$ = $1; // Επιστροφή της τιμής για χρήση στον κώδικα //XREIAZETAI??
     }
-} QUOTES
+} QUOTES;
 
-orientation_feature: /*empty*/ | ORIENTATION EQUAL QUOTES STRING QUOTES
+orientation_feature: /*empty*/ | ORIENTATION EQUAL QUOTES STRING QUOTES ;
 
-textcolor_feature: /*empty*/ | TEXTCOLOR EQUAL QUOTES STRING QUOTES
+textcolor_feature: /*empty*/ | TEXTCOLOR EQUAL QUOTES STRING QUOTES;
 
 padding_feature: /*empty*/ | PADDING EQUAL QUOTES POSINT { if ($1 <=0) {
         printf("Error: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
         exit(1);
             }
-        }  QUOTES
+        }  QUOTES;
 
 checkbutton_feature: /*empty*/ | CHECKBUTTON EQUAL QUOTES STRING {
     for (int i=0; i<num_of_radio_button_ids; i++) {
@@ -151,52 +152,59 @@ checkbutton_feature: /*empty*/ | CHECKBUTTON EQUAL QUOTES STRING {
         strncpy(radio_button_ids_memory[num_of_radio_button_ids], $1, sizeof(radio_button_ids_memory[i]));
         num_of_radio_button_ids++;
     }
-} QUOTES
+} QUOTES;
 
-max_feature: /*empty*/ | MAX EQUAL QUOTES POSINT {max_value=$1;} QUOTES
+max_feature: /*empty*/ | MAX EQUAL QUOTES POSINT {max_value=$1;} QUOTES;
 
 progress_feature: /*empty*/ | PROGRESS EQUAL QUOTES POSINT {
     if ($1<0 || $1>max_value) { 
         fprintf(stderr, "Errror: This is not an allowed value. The value entered should be between 0 and the max value defined");
         exit(1); //έξοδος από το πρόγραμμά με σφάλμα
     }
-} QUOTES
+} QUOTES;
 //_____________________________________________________________________________
 //ορισμός κανώνων για στοιχεία που μπορούν να εμφανιστούν 0 ή πολλαπλές φορές
-elements_null_or_more: /*empty*/ | elements_null_or_more | elements 
-relative_layout_null_or_more: /*empty*/ | relative_layout_null_or_more | relative_layout 
-comment_string:  /*empty*/ | comment_string | COMMENT_CHAR
+elements_null_or_more: /*empty*/ | elements_null_or_more | elements ;
+relative_layout_null_or_more: /*empty*/ | relative_layout_null_or_more | relative_layout ;
+comment_string:  /*empty*/ | comment_string | COMMENT_CHAR;
 //______________________________________________________________________________
 //ορισμός κανώνων για στοιχεία που πρέπει να εμφανιστούν 1 ή περισσότερες φορές
-elements_one_or_more: elements_null_or_more | elements 
-linear_layout_one_or_more: linear_layout_one_or_more | linear_layout 
+elements_one_or_more: elements_null_or_more | elements;
+linear_layout_one_or_more: linear_layout_one_or_more | linear_layout ;
 
 %%
 yyerror(const char *error_msg)
 {   
     errors++;
-    printf(stderr, "There was a syntax error in line %d: %s/n", yylineno, error_msg); //υποχρεωτική συνάρτηση στο μεταπροόγραμμα bison, καλείται όταν υπάρχει συνακτικό σφάλμα
+    printf(stderr, "There was a syntax error in line %d: %s/n", new_line, error_msg); //υποχρεωτική συνάρτηση στο μεταπροόγραμμα bison, καλείται όταν υπάρχει συνακτικό σφάλμα
 }
 int main(int argc, char **argv){
-	argv++;
-	argc--;
+	//argv++;
+	//argc--;
 	errors=0;  
-	
-    if(argc>0)
-		yyin=fopen(argv[0], "r");
+
+	//*
+    int ilt=0;
+    for(;ilt<argc;ilt++){
+        printf("%s\n",argv[ilt]);
+    }
+    if(argc>1)
+		yyin=fopen(argv[1], "r");
         if (!yyin){
             perror("The file could not be opened");
             return 1;
         }
-	else
-		yyin=stdin;	
-	
+	//else yyin=stdin;	
+	//*/
+    /*FILE *xml = fopen(argv[1], "r");
+	yyin = xml;*/
     yyparse();
 	
 	if(errors==0) {
 	     printf("Program Compiled Succesfully\n"); 
     }
     else {
+        printf("\n");
         printf("%d syntax errors have occured\n", errors);
     }
 	  

@@ -10,11 +10,13 @@
 //int chars=0;  not used
 //int words=0;
 //int lines=0; //string (\\.|[^\"])*
+int new_line=1;
 %}
 
 nums ([0-9])+
 strings ([a-zA-Z])+       
-white_spaces [\t\n]
+white_space [ \t]+
+newline [\n]+
 
 %%
 "LinearLayout" {PrintCode; return LINEAR;}
@@ -49,7 +51,8 @@ white_spaces [\t\n]
 . {PrintCode; return COMMENT_CHAR;}  //οποιαδήποτε χαρακτήρας
 {nums}   {PrintCode; return POSINT;}
 {strings} {PrintCode; return STRING;}
-{white_spaces} {/* Ignore whitespaces. */}
+\n {new_line++;} 
+{white_space} {;/* Ignore whitespaces. */}
 %%
 
 //{nums}   { yylval.integer = atoi(yytext); return POSINT; } //yylval: θέτει τιμή για χρήση στα actions
