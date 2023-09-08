@@ -146,7 +146,7 @@ int main(int argc, char **argv){
     yyparse();
 	
 	if(errors==0) {
-	     printf("Program Compiled Succesfully\n"); 
+	     printf("\nProgram Compiled Succesfully\n"); 
     }
     else {
         printf("\n");
