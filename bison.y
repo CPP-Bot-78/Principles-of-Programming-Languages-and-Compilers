@@ -4,7 +4,7 @@
 void yyerror(char *);
 extern FILE *yyin;								
 extern FILE *yyout;
-extern yylineno=1;
+extern yylineno;//extern yylineno=1;
 int errors;	
 
 char* ids_memory[100];
@@ -112,7 +112,7 @@ id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
             fprintf(stderr, "Errror: This Id value has been used again. Duplicated Id values cannot be accepted.");
             exit(1); //έξοδος από το πρόγραμμά με σφάλμα
             }
-        strncpy(ids_memory[num_of_ids], $1, sizeof(ids_memory[]));
+        strncpy(ids_memory[num_of_ids], $1, sizeof(ids_memory[i])); // strncpy(char1,char2,n)
         num_of_ids++;
         //$$ = $1; // Επιστροφή της τιμής για χρήση στον κώδικα //XREIAZETAI??
     }
@@ -124,8 +124,8 @@ radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
             fprintf(stderr, "Errror: This Id value has been used again. Duplicated Id values cannot be accepted.");
             exit(1); //έξοδος από το πρόγραμμά με σφάλμα
             }
-        strncpy(ids_memory[num_of_ids], $1, sizeof(ids_memory[]));
-        strncpy(ids_memory[num_of_radio_button_ids], $1, sizeof(radio_button_ids_memory[]));
+        strncpy(ids_memory[num_of_ids], $1, sizeof(ids_memory[i]));
+        strncpy(ids_memory[num_of_radio_button_ids], $1, sizeof(radio_button_ids_memory[i]));
         num_of_ids++;
         num_of_radio_button_ids++;
         //$$ = $1; // Επιστροφή της τιμής για χρήση στον κώδικα //XREIAZETAI??
@@ -148,7 +148,7 @@ checkbutton_feature: /*empty*/ | CHECKBUTTON EQUAL QUOTES STRING {
             fprintf(stderr, "Errror: This value should much with a RadioButton Id value");
             exit(1); //έξοδος από το πρόγραμμά με σφάλμα
             }
-        strncpy(radio_button_ids_memory[num_of_radio_button_ids], $1, sizeof(radio_button_ids_memory[]));
+        strncpy(radio_button_ids_memory[num_of_radio_button_ids], $1, sizeof(radio_button_ids_memory[i]));
         num_of_radio_button_ids++;
     }
 } QUOTES
