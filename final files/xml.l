@@ -10,10 +10,12 @@ int new_line=1;
 %option noyywrap
 %s COMMENT
 
+
 %%
 <COMMENT>{
 "-->" {BEGIN(INITIAL);}
-"(.|\n)*" {PrintComment;}
+(.|\n) {PrintComment;} /*(.|\n)**/
+(--) {printf("\n-- is now allowed in comments.\n");exit(1);}
 }
 
 <INITIAL>{
@@ -27,7 +29,7 @@ int new_line=1;
 "RadioButton" {PrintCode; return RADIOBUTTON;}
 "ProgressBar" {PrintCode; return PROGRESSBAR;}
 
-"android:layout_width=" {PrintCode; return WIDTH;}
+"android:layout_width" {PrintCode; return WIDTH;}
 "android:layout_height" {PrintCode; return HEIGHT;}
 "android:id" {PrintCode; return ID;}
 "android:orientation" {PrintCode; return ORIENTATION;}
@@ -46,9 +48,10 @@ int new_line=1;
 "/" {PrintCode; return ENDSYMBOL;}
 "\"" {PrintCode; return QUOTES;}
 . {PrintCode; return COMMENT_CHAR;}  //οποιαδήποτε χαρακτήρας
-[0-9]+ {PrintCode; yylval.integer=atoi(yytext); return POSINT;}
+[1-9][0-9]* {PrintCode; yylval.integer=atoi(yytext); return POSINT;}
 [a-zA-Z0-9_ ]+ {yylval.string=strdup(yytext); PrintCode; return STRING;}
-[\n] {PrintCode;}
+[\n] {PrintCode;new_line++;}
 [\t]+ {PrintCode;}
 }
 %%
+/*[1-9][0-9]* {PrintCode; yylval.integer=atoi(yytext); return POSINT;}*/

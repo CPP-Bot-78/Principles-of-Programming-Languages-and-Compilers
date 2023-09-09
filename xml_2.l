@@ -1,24 +1,23 @@
-%option noyywrap
-
 %{
 #include "bison.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #define PrintCode fprintf(yyout, "%.*s", yyleng, yytext)
-//#define PrintCode fwrite(yytext, yyleng, yyout)
-//int chars=0;  not used
-//int words=0;
-//int lines=0; //string (\\.|[^\"])*
+#define PrintComment fprintf(yyout, "Comment: %.*s", yyleng, yytext)
 int new_line=1;
 %}
-
-nums ([0-9])+    
-strings ([a-zA-Z_0-9])+
-white_space ([ \t])+
-newline [\n]
+%option noyywrap
+%s COMMENT
 
 %%
+<COMMENT>{
+"-->" {BEGIN(INITIAL);}
+"(.|\n)*" {PrintComment;}
+}
+
+<INITIAL>{
+"<!--" {BEGIN(COMMENT);}
 "LinearLayout" {PrintCode; return LINEAR;}
 "RelativeLayout" {PrintCode; return RELATIVE;}
 "TextView" {PrintCode; return TEXTVIEW;}
@@ -28,7 +27,7 @@ newline [\n]
 "RadioButton" {PrintCode; return RADIOBUTTON;}
 "ProgressBar" {PrintCode; return PROGRESSBAR;}
 
-"android:layout_width" {PrintCode; return WIDTH;}
+"android:layout_width=" {PrintCode; return WIDTH;}
 "android:layout_height" {PrintCode; return HEIGHT;}
 "android:id" {PrintCode; return ID;}
 "android:orientation" {PrintCode; return ORIENTATION;}
@@ -46,14 +45,10 @@ newline [\n]
 ">" {PrintCode; return RIGHTSYMBOL;}
 "/" {PrintCode; return ENDSYMBOL;}
 "\"" {PrintCode; return QUOTES;}
-"<!--" {PrintCode; return STARTCOMMENT;}
-"-->" {PrintCode; return ENDCOMMENT;}
 . {PrintCode; return COMMENT_CHAR;}  //οποιαδήποτε χαρακτήρας
-{nums}   {PrintCode; return POSINT;}
-{strings} {PrintCode; return STRING;}
-{white_space} {;}
-{newline} {++new_line;printf("\n");}
+[0-9]+ {PrintCode; yylval.integer=atoi(yytext); return POSINT;}
+[a-zA-Z0-9_ ]+ {yylval.string=strdup(yytext); PrintCode; return STRING;}
+[\n] {PrintCode;}
+[\t]+ {PrintCode;}
+}
 %%
-
-//{nums}   { yylval.integer = atoi(yytext); return POSINT; } //yylval: θέτει τιμή για χρήση στα actions
-//{strings} { yylval.string = strdup(yytext); return STRING; }

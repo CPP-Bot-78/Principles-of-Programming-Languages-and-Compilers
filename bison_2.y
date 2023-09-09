@@ -3,11 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 void yyerror(char *);
-void id_cmp(char* s);
-void comment();
 extern FILE *yyin;								
 extern FILE *yyout;
-extern int yylineno;//extern yylineno=1;
 extern char* yytext;
 extern int new_line;
 int errors;	
@@ -19,34 +16,27 @@ char *radio_button_ids_memory[1024];
 int num_of_radio_button_ids=0;
 
 int max_value;
+
+char* checkbutton;
+
 %}
 
 %token LINEAR RELATIVE TEXTVIEW IMAGEVIEW BUTTON RADIOGROUP RADIOBUTTON PROGRESSBAR 
 %token WIDTH HEIGHT ID ORIENTATION TEXT TEXTCOLOR SRC PADDING CHECKBUTTON MAX PROGRESS 
 %token EQUAL LEFTSYMBOL RIGHTSYMBOL ENDSYMBOL QUOTES STARTCOMMENT ENDCOMMENT POSINT STRING
 %token NORADIOBUTTON COMMENT_CHAR
+
+%union{
+char* string;
+unsigned int integer;
+}
+
 %start root_layout
 
 %%
 root_layout: linear_layout
            | relative_layout 
            ;
-
-must_atributes: WIDTH EQUAL QUOTES must_atributes_values QUOTES
-                HEIGHT EQUAL QUOTES must_atributes_values QUOTES
-              ;
-
-must_atributes_values: STRING  {
-                            if (strcmp(yytext, "wrap_content") != 0 && strcmp(yytext, "match_parent") != 0) {
-                            printf("\nError: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
-                            exit(1);
-                        }
-                      }
-                      | POSINT { if (atoi(yytext) <=0) {
-                            printf("\nError: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
-                            exit(1);
-                        }
-                      };
 
 linear_layout: LEFTSYMBOL LINEAR must_atributes
                                  id_feature
@@ -73,6 +63,24 @@ relative_layout: LEFTSYMBOL RELATIVE must_atributes
 elements: text_view | image_view | button | radio_group | progress_bar;
 linear_elements: text_view | image_view | button | radio_group | progress_bar |relative_layout;
 
+must_atributes: WIDTH QUOTES must_atributes_values QUOTES
+                HEIGHT EQUAL QUOTES must_atributes_values QUOTES
+              ;
+        
+              
+must_atributes_values: STRING  {
+                            if (strcmp(yytext, "wrap_content") != 0 && strcmp(yytext, "match_parent") != 0) {
+                            printf("\nError: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
+                            exit(1);
+                        }
+                      }
+                      | POSINT { if (atoi(yytext) <=0) {
+                            printf("\nError: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
+                            exit(1);
+                        }
+                      };
+
+
 text_view: LEFTSYMBOL TEXTVIEW must_atributes
            id_feature
            TEXT EQUAL QUOTES STRING QUOTES
@@ -95,8 +103,26 @@ radio_group: LEFTSYMBOL RADIOGROUP must_atributes
             id_feature
             checkbutton_feature RIGHTSYMBOL
             radio_button_one_or_more
-            LEFTSYMBOL ENDSYMBOL RADIOGROUP RIGHTSYMBOL
-            ;
+            LEFTSYMBOL ENDSYMBOL RADIOGROUP {
+                int checkbutton_on_radio_list=0;
+                //printf("\n%s\n",checkbutton);
+                for (int j=0; j<num_of_radio_button_ids; j++){
+                    if (strcmp(checkbutton, radio_button_ids_memory[j])==0){
+                        checkbutton_on_radio_list = 1;
+                    }
+                }
+                if(!checkbutton_on_radio_list){
+                    fprintf(stderr, "\nError: This value should match with a RadioButton Id value\n");
+                    exit(1); //έξοδος από το πρόγραμμά με σφάλμα
+                }//*
+                else {
+                    //checkbutton=strdup('\0');
+                    //radio_button_ids_memory[0] = strdup('\0');
+                    checkbutton=strdup("");
+                    memset(radio_button_ids_memory, '\0', sizeof(num_of_radio_button_ids));
+                    num_of_radio_button_ids=0;
+                } //*/
+            } RIGHTSYMBOL;
 
 radio_button: LEFTSYMBOL RADIOBUTTON must_atributes
               radio_button_id_feature
@@ -110,22 +136,18 @@ progress_bar: LEFTSYMBOL PROGRESSBAR must_atributes
               progress_feature ENDSYMBOL RIGHTSYMBOL
               ;
 
-comment: STARTCOMMENT comment_string ENDCOMMENT ;
+//comment: STARTCOMMENT comment_string ENDCOMMENT ;
 //_____________________________________________________________________________
 //ορισμός κανώνων προαιρετικών στοιχείων
-id_feature: /*empty*/ | ID EQUAL QUOTES STRING { //printf("%s",yytext);
+id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
     for (int i=0; i<num_of_ids; i++) {
         if (strcmp(ids_memory[i],yytext)==0) {
             fprintf(stderr, "Error: This Id value has been used again. Duplicated Id values cannot be accepted.");
             exit(1); //έξοδος από το πρόγραμμά με σφάλμα
             }
-            //else printf("%s",yytext);
         }
-        ids_memory[num_of_ids] = strdup(yytext);//strcpy(ids_memory[num_of_ids], yytext);//strncpy(ids_memory[num_of_ids], yytext, sizeof(ids_memory[i])); // strncpy(char1,char2,n)
-        //printf("\n\n%s\n",ids_memory[num_of_ids]);
+        ids_memory[num_of_ids] = strdup(yytext);
         num_of_ids++;
-        //for (int i=0; i<num_of_ids; i++) {printf("\n%d. %s\n",i,ids_memory[i]);}
-        //$$ = yytext; // Επιστροφή της τιμής για χρήση στον κώδικα //XREIAZETAI??
 } QUOTES;
 
 radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
@@ -135,11 +157,10 @@ radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
             exit(1); //έξοδος από το πρόγραμμά με σφάλμα
             }
     }
-    ids_memory[num_of_ids] = strdup(yytext);    //strncpy(ids_memory[num_of_ids], yytext, sizeof(ids_memory[i]));
-    radio_button_ids_memory[num_of_radio_button_ids] = strdup(yytext);    //strncpy(radio_button_ids_memory[num_of_radio_button_ids], yytext, sizeof(radio_button_ids_memory[i]));
+    ids_memory[num_of_ids] = strdup(yytext);  
+    radio_button_ids_memory[num_of_radio_button_ids] = strdup(yytext); 
     num_of_ids++;
     num_of_radio_button_ids++;
-        //$$ = yytext; // Επιστροφή της τιμής για χρήση στον κώδικα //XREIAZETAI??
 
 } QUOTES;
 
@@ -147,24 +168,15 @@ orientation_feature: /*empty*/ | ORIENTATION EQUAL QUOTES STRING QUOTES ;
 
 textcolor_feature: /*empty*/ | TEXTCOLOR EQUAL QUOTES STRING QUOTES;
 
-padding_feature: /*empty*/ | PADDING EQUAL QUOTES POSINT { if (yytext <=0) {
-        printf("Error: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
+padding_feature: /*empty*/ | PADDING EQUAL QUOTES POSINT { if (atoi(yytext) <=0) {
+        printf("\nError: Allowed android:padding values are positive integer numbers.");
         exit(1);
             }
         }  QUOTES;
 
-checkbutton_feature: /*empty*/ | CHECKBUTTON EQUAL QUOTES STRING {
-    for (int i=0; i<num_of_radio_button_ids; i++) {
-        if (strcmp(yytext, radio_button_ids_memory[i])==0) {
-            fprintf(stderr, "Error: This value should much with a RadioButton Id value");
-            exit(1); //έξοδος από το πρόγραμμά με σφάλμα
-            }
-        strncpy(radio_button_ids_memory[num_of_radio_button_ids], yytext, sizeof(radio_button_ids_memory[i]));
-        num_of_radio_button_ids++;
-    }
-} QUOTES;
+checkbutton_feature: /*empty*/ | CHECKBUTTON EQUAL QUOTES STRING{checkbutton= strdup(yytext);} QUOTES; 
 
-max_feature: /*empty*/ | MAX EQUAL QUOTES POSINT {max_value=yytext;} QUOTES;
+max_feature: /*empty*/ | MAX EQUAL QUOTES POSINT {max_value=atoi(yytext);} QUOTES;
 
 progress_feature: /*empty*/ | PROGRESS EQUAL QUOTES POSINT {
     if (atoi(yytext)<0 || atoi(yytext)>max_value) { 
@@ -173,12 +185,12 @@ progress_feature: /*empty*/ | PROGRESS EQUAL QUOTES POSINT {
     }
 } QUOTES;
 //_____________________________________________________________________________
-//ορισμός κανώνων για στοιχεία που μπορούν να εμφανιστούν 0 ή πολλαπλές φορές
+//ορισμός κανoνων για στοιχεία που μπορούν να εμφανιστούν 0 ή πολλαπλές φορές
 elements_null_or_more: /*empty*/ | elements_null_or_more  elements | elements ;
 relative_layout_null_or_more: /*empty*/ | relative_layout_null_or_more relative_layout | relative_layout ;
-comment_string:  /*empty*/| comment_string COMMENT_CHAR | comment_string ;
+//comment_string:  /*empty*/| comment_string COMMENT_CHAR | comment_string ;
 //______________________________________________________________________________
-//ορισμός κανώνων για στοιχεία που πρέπει να εμφανιστούν 1 ή περισσότερες φορές
+//ορισμός κανoνων για στοιχεία που πρέπει να εμφανιστούν 1 ή περισσότερες φορές
 elements_one_or_more: elements | elements_one_or_more elements;
 linear_elements_one_or_more: linear_elements | linear_elements_one_or_more linear_elements;
 linear_layout_one_or_more: linear_layout_one_or_more linear_layout | linear_layout;
@@ -193,29 +205,9 @@ yyerror(const char *error_msg)
 id_cmp(char* s){
     printf("\n");
 }
-comment(){
-    while(strcmp(yytext,"-->")!=0){
-        if (strcmp(yytext,"--")==0){
-            errors++;
-            printf("\nError. \"--\" is not allowed in comments.\n");
-        }
-        printf("%s",yytext);
-    }
-    printf("%s",yytext);
-}
 
 int main(int argc, char **argv){
-	//argv++;
-	//argc--;
 	errors=0;  
-    /*
-    if(argc>1)
-		yyin=fopen(argv[1], "r");
-        if (!yyin){
-            perror("The file could not be opened");
-            return 1;
-        }
-        */
     FILE *jfile = fopen(argv[1], "r");
 	yyin = jfile;
     if (!yyin){
@@ -235,8 +227,3 @@ int main(int argc, char **argv){
 	return 0;
 }			
 
-//{printf("Successful Parsing! The code you wrote is in the correct form\n");}
-//διαφοροποίηση από αρχικό BNF - μπορεί όχι σωστό
-//POSINT: POSINT*
-//STRING: STRING*
-//comment: STARTCOMMENT STRING ENDCOMMENT
