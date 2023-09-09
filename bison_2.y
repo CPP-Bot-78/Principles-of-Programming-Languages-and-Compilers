@@ -121,7 +121,7 @@ id_feature: /*empty*/ | ID EQUAL QUOTES STRING { //printf("%s",yytext);
             }
             //else printf("%s",yytext);
         }
-        ids_memory[num_of_ids] = yytext;//strcpy(ids_memory[num_of_ids], yytext);//strncpy(ids_memory[num_of_ids], yytext, sizeof(ids_memory[i])); // strncpy(char1,char2,n)
+        ids_memory[num_of_ids] = strdup(yytext);//strcpy(ids_memory[num_of_ids], yytext);//strncpy(ids_memory[num_of_ids], yytext, sizeof(ids_memory[i])); // strncpy(char1,char2,n)
         //printf("\n\n%s\n",ids_memory[num_of_ids]);
         num_of_ids++;
         //for (int i=0; i<num_of_ids; i++) {printf("\n%d. %s\n",i,ids_memory[i]);}
@@ -135,10 +135,10 @@ radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING {
             exit(1); //έξοδος από το πρόγραμμά με σφάλμα
             }
     }
-        //strncpy(ids_memory[num_of_ids], yytext, sizeof(ids_memory[i]));
-        //strncpy(radio_button_ids_memory[num_of_radio_button_ids], yytext, sizeof(radio_button_ids_memory[i]));
-        num_of_ids++;
-        num_of_radio_button_ids++;
+    ids_memory[num_of_ids] = strdup(yytext);    //strncpy(ids_memory[num_of_ids], yytext, sizeof(ids_memory[i]));
+    radio_button_ids_memory[num_of_radio_button_ids] = strdup(yytext);    //strncpy(radio_button_ids_memory[num_of_radio_button_ids], yytext, sizeof(radio_button_ids_memory[i]));
+    num_of_ids++;
+    num_of_radio_button_ids++;
         //$$ = yytext; // Επιστροφή της τιμής για χρήση στον κώδικα //XREIAZETAI??
 
 } QUOTES;
