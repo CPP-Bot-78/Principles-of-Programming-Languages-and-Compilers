@@ -1,3 +1,4 @@
+<!-- Έλεγχος αν δουλεύει το progress bar με την τιμή του progress να είναι μικρότερη κι έπειτα μεγαλύτερη της τιμής του max-->
 <LinearLayout
 android:layout_width="match_parent"
 android:layout_height="match_parent"
