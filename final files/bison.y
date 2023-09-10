@@ -176,7 +176,7 @@ max_feature: /*empty*/ | MAX EQUAL QUOTES POSINT {max_value=atoi(yytext);} QUOTE
 
 progress_feature: /*empty*/ | PROGRESS EQUAL QUOTES POSINT {
     if (atoi(yytext)<0 || atoi(yytext)>max_value) { 
-        fprintf(stderr, "Error: This is not an allowed value. The value entered should be between 0 and the max value defined");
+        fprintf(stderr, "Error line %d: This is not an allowed value. The value entered should be between 0 and the max value defined"), new_line;
         exit(1); //έξοδος από το πρόγραμμά με σφάλμα
     }
 } QUOTES;
