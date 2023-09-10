@@ -14,7 +14,7 @@ int new_line=1;
 <COMMENT>{
 "-->" {BEGIN(INITIAL);}
 (.|\n) {PrintCode;} /*(.|\n)**/
-(--) {printf("\n-- is now allowed in comments.\n");exit(1);}
+(--) {printf("\nError line %d-- is now allowed in comments.\n", new_line);exit(1);}
 }
 
 <INITIAL>{

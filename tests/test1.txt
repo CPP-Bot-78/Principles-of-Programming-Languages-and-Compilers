@@ -1,7 +1,12 @@
+<!--Έλγεγχος ορθής λειτουργίας συντακτικού και λεκτικού αναλυτή όταν το αρχείο ελέγχου είναι σε σωστή μορφή-->
+
 <LinearLayout
 android:layout_width="match_parent"
 android:layout_height="match_parent"
+android:id="LL1"
 android:orientation="vertical">
+
+<!--Αυτό είναι comment-->
 
 <TextView
 android:layout_width="20"
@@ -9,9 +14,39 @@ android:layout_height="20"
 android:id="TV1"
 android:text="Dummytext"/>
 
+<TextView
+android:layout_width="20"
+android:layout_height="20"
+android:text="Newtext"
+android:textColor="Color"/>
+
+<ImageView
+android:layout_width="match_parent"
+android:layout_height="20"
+android:src="file_source"
+android:padding="45"/>
+
+<Button
+android:layout_width="17"
+android:layout_height="20"
+android:text="Buttontext"
+android:id="B1"
+android:padding="25"/>
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:id="LL2"
+android:orientation="vertical">
+
+<!--Άλλο ένα comment-->
+
 <RadioGroup
 android:layout_width="wrap_content"
-android:layout_height="wrap_content">
+android:layout_height="wrap_content"
+android:radio_button_number="10"
+android:id="RG1"
+android:checkedButton="RB2">
 
 <RadioButton
 android:layout_width="wrap_content"
@@ -25,9 +60,56 @@ android:layout_height="wrap_content"
 android:id="RB2"
 android:text="Option2"/>
 
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB3"
+android:text="Option3"/>
 
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB4"
+android:text="Option4"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB5"
+android:text="Option5"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB6"
+android:text="Option6"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB7"
+android:text="Option7"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB8"
+android:text="Option8"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB9"
+android:text="Option9"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB10"
+android:text="Option10"/>
 
 </RadioGroup>
+</LinearLayout>
 
 
 <RelativeLayout
@@ -39,9 +121,6 @@ android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:src="image_name"
 android:padding="50"/>
-
-</RelativeLayout>
-</LinearLayout>
 
 </RelativeLayout>
 </LinearLayout>

@@ -1,12 +1,17 @@
+<!-- Η τιμή του android:checkedButton δεν αντιστοιχεί σε id ενός από τα radio buttons -->
+
 <LinearLayout
 android:layout_width="match_parent"
 android:layout_height="match_parent"
+android:id="LL2"
 android:orientation="vertical">
 
 <RadioGroup
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
-android:checkedButton="RB1">
+android:radio_button_number="10"
+android:id="RG1"
+android:checkedButton="RB11">
 
 <RadioButton
 android:layout_width="wrap_content"
@@ -14,20 +19,59 @@ android:layout_height="wrap_content"
 android:id="RB1"
 android:text="Option1"/>
 
-</RadioGroup>
-
-
-<RadioGroup
+<RadioButton
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
-android:checkedButton="RB2">
+android:id="RB2"
+android:text="Option2"/>
 
 <RadioButton
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:id="RB3"
-android:text="Option1"/>
+android:text="Option3"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB4"
+android:text="Option4"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB5"
+android:text="Option5"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB6"
+android:text="Option6"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB7"
+android:text="Option7"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB8"
+android:text="Option8"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB9"
+android:text="Option9"/>
+
+<RadioButton
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:id="RB10"
+android:text="Option10"/>
 
 </RadioGroup>
-
 </LinearLayout>

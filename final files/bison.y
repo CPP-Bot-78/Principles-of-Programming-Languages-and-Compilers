@@ -44,25 +44,16 @@ linear_layout: LEFTSYMBOL LINEAR must_atributes
                                  orientation_feature RIGHTSYMBOL
                                  linear_elements_one_or_more
                 LEFTSYMBOL ENDSYMBOL LINEAR RIGHTSYMBOL
-             |  LEFTSYMBOL LINEAR must_atributes
-                                 id_feature
-                                 orientation_feature RIGHTSYMBOL
-                                 linear_layout_one_or_more
-                LEFTSYMBOL ENDSYMBOL LINEAR RIGHTSYMBOL
                 ;
 
 relative_layout: LEFTSYMBOL RELATIVE must_atributes
                                  id_feature RIGHTSYMBOL
-                                 elements_null_or_more
-                 LEFTSYMBOL ENDSYMBOL RELATIVE RIGHTSYMBOL
-               | LEFTSYMBOL RELATIVE must_atributes
-                                 id_feature RIGHTSYMBOL
-                                 relative_layout_null_or_more 
+                                 relative_elements_null_or_more
                  LEFTSYMBOL ENDSYMBOL RELATIVE RIGHTSYMBOL
                  ;
 
-elements: text_view | image_view | button | radio_group | progress_bar;
-linear_elements: text_view | image_view | button | radio_group | progress_bar |relative_layout;
+relative_elements: text_view | image_view | button | radio_group | progress_bar | relative_layout;
+linear_elements: text_view | image_view | button | radio_group | progress_bar | relative_layout |linear_layout;
 
 must_atributes: WIDTH EQUAL QUOTES must_atributes_values QUOTES
                 HEIGHT EQUAL QUOTES must_atributes_values QUOTES
@@ -71,12 +62,12 @@ must_atributes: WIDTH EQUAL QUOTES must_atributes_values QUOTES
               
 must_atributes_values: STRING  { // αν είναι string ελέγχουμε μεσω της strcmp(0 αν είναι ίδια) αν έχει μια εκ των δύο παρακάτω τιμών, αλλιώς error
                             if (strcmp(yytext, "wrap_content") != 0 && strcmp(yytext, "match_parent") != 0) { 
-                            printf("\nError: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
+                            printf("\nError line %d: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.", new_line);
                             exit(1);
                         }
                       } // αν είναι int ελέγχουμε αν είναι <=0 για να εμφανιστεί error
                       | POSINT { if (atoi(yytext) <=0) {
-                            printf("\nError: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.");
+                            printf("\nError line %d: Allowed android:layout_width and android:layout_height values are \"wrap_content\", \"match_parent\" or an positive integer number.", new_line);
                             exit(1);
                         }
                       };
@@ -113,11 +104,11 @@ radio_group: LEFTSYMBOL RADIOGROUP must_atributes
                     }
                 }
                 if(!checkbutton_on_radio_list){ // αν δεν βρεθεί τυπώνουμε error
-                    fprintf(stderr, "\nError: This value should match with a RadioButton Id value\n");
+                    fprintf(stderr, "\nError line %d: This value should match with a RadioButton Id value\n", new_line);
                     exit(1); //έξοδος από το πρόγραμμά με σφάλμα
                 }
                 else if (num_of_radio_button_ids != wanted_radio_buttons){ // Ερ 3. Aν ο αριθμός των radio buttons δεν ειναι αυτός του έξτρα στοιχείου τυπώνουμε error
-                    fprintf(stderr, "\nError: The number of radio buttons is not the same as the android:radio_button_number value\n");
+                    fprintf(stderr, "\nError line %d: The number of radio buttons is not the same as the android:radio_button_number value\n", new_line);
                     exit(1); //έξοδος από το πρόγραμμά με σφάλμα
                 }
                 else { // καθαρίζουμε το checkbutton, τον πίνακα με τα id radio buttons, το πληθος αυτων των ids σε περιπτωση που ακολουθει άλλο radio group
@@ -145,7 +136,7 @@ progress_bar: LEFTSYMBOL PROGRESSBAR must_atributes
 id_feature: /*empty*/ | ID EQUAL QUOTES STRING { //ερ 2a. Στην 1η επαναληψη δεν τρέχει(πληθος id =0), έπειτα ελέγχει το νέο id με τα υπόλοιπα του πίνακα
     for (int i=0; i<num_of_ids; i++) { 
         if (strcmp(ids_memory[i],yytext)==0) { //αν υπάρχει ηδη τυπώνουμε error και τερματίζει το προγραμμα
-            fprintf(stderr, "Error: This Id value has been used again. Duplicated Id values cannot be accepted.");
+            fprintf(stderr, "\nError line %d: This Id value has been used again. Duplicated Id values cannot be accepted\n.", new_line);
             exit(1); //έξοδος από το πρόγραμμά με σφάλμα
             }
         }
@@ -156,7 +147,7 @@ id_feature: /*empty*/ | ID EQUAL QUOTES STRING { //ερ 2a. Στην 1η επα�
 radio_button_id_feature: /*empty*/ | ID EQUAL QUOTES STRING { //ίδιο με πάνω, προστίθεται το id και σε έναν ξεχωριστό πίνακα
     for (int i=0; i<num_of_ids; i++) {
         if (strcmp(yytext, ids_memory[i])==0) {
-            fprintf(stderr, "Error: This Id value has been used again. Duplicated Id values cannot be accepted.");
+            fprintf(stderr, "\nError line %d: This Id value has been used again. Duplicated Id values cannot be accepted.\n", new_line);
             exit(1); //έξοδος από το πρόγραμμά με σφάλμα
             }
     }
@@ -172,7 +163,7 @@ orientation_feature: /*empty*/ | ORIENTATION EQUAL QUOTES STRING QUOTES ;
 textcolor_feature: /*empty*/ | TEXTCOLOR EQUAL QUOTES STRING QUOTES;
 
 padding_feature: /*empty*/ | PADDING EQUAL QUOTES POSINT { if (atoi(yytext) <=0) { // ερ 2c, αν padding <=0 -> error & exit
-        printf("\nError: Allowed android:padding values are positive integer numbers.");
+        printf("\nError line %d: Allowed android:padding values are positive integer numbers. ", new_line);
         exit(1);
             }
         }  QUOTES;
@@ -191,14 +182,11 @@ progress_feature: /*empty*/ | PROGRESS EQUAL QUOTES POSINT {
 } QUOTES;
 //_____________________________________________________________________________
 //ορισμός κανoνων για στοιχεία που μπορούν να εμφανιστούν 0 ή πολλαπλές φορές
-elements_null_or_more: /*empty*/ | elements_null_or_more  elements | elements ;
-relative_layout_null_or_more: /*empty*/ | relative_layout_null_or_more relative_layout | relative_layout ;
+relative_elements_null_or_more: /*empty*/ | relative_elements | relative_elements_null_or_more relative_elements;
 //comment_string:  /*empty*/| comment_string COMMENT_CHAR | comment_string ;
 //______________________________________________________________________________
 //ορισμός κανoνων για στοιχεία που πρέπει να εμφανιστούν 1 ή περισσότερες φορές
-elements_one_or_more: elements | elements_one_or_more elements;
 linear_elements_one_or_more: linear_elements | linear_elements_one_or_more linear_elements;
-linear_layout_one_or_more: linear_layout_one_or_more linear_layout | linear_layout;
 radio_button_one_or_more: radio_button_one_or_more radio_button | radio_button;
 
 %%
