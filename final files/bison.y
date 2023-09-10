@@ -195,9 +195,6 @@ yyerror(const char *error_msg)
     errors++;
     fprintf(stderr, "\nThere was a syntax error in line %d: %s\n", new_line, error_msg); //υποχρεωτική συνάρτηση στο μεταπροόγραμμα bison, καλείται όταν υπάρχει συνακτικό σφάλμα
 }
-id_cmp(char* s){
-    printf("\n");
-}
 
 int main(int argc, char **argv){
 	errors=0;  
