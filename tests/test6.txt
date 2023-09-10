@@ -1,4 +1,4 @@
-<-- Αρνητική τιμή ή string στο android:padding -->
+<!-- Αρνητική τιμή ή string στο android:padding -->
 
 <LinearLayout
 android:layout_width="match_parent"
