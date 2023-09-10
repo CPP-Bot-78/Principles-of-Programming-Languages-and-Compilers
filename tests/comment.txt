@@ -3,10 +3,12 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical">
 
-<!-- This s a comment ignore me -->
+<!-- Έλεγχος comment just ignore me -->
 
-<!-- Ignore me again? -->
+<!-- Ignore me again -->
 
 <!-- And again -->
+
+<!-- is this -- right -->
 
 </LinearLayout>

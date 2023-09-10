@@ -1,3 +1,4 @@
+<--Ερ 3 Έλεγχος αν ο αριθμός των radio buttons να είναι διαφορετικός από αυτόν που ορίσαμε στο radio_button_number-->
 <LinearLayout
 android:layout_width="match_parent"
 android:layout_height="match_parent"
