@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 #define PrintCode fprintf(yyout, "%.*s", yyleng, yytext)
-#define PrintComment fprintf(yyout, "Comment: %.*s", yyleng, yytext)
 int new_line=1;
 %}
 %option noyywrap
@@ -14,7 +13,7 @@ int new_line=1;
 %%
 <COMMENT>{
 "-->" {BEGIN(INITIAL);}
-(.|\n) {PrintComment;} /*(.|\n)**/
+(.|\n) {PrintCode;} /*(.|\n)**/
 (--) {printf("\n-- is now allowed in comments.\n");exit(1);}
 }
 
@@ -50,8 +49,7 @@ int new_line=1;
 . {PrintCode; return COMMENT_CHAR;}  //οποιαδήποτε χαρακτήρας
 [1-9][0-9]* {PrintCode; yylval.integer=atoi(yytext); return POSINT;}
 [a-zA-Z0-9_ ]+ {yylval.string=strdup(yytext); PrintCode; return STRING;}
-[\n] {PrintCode;new_line++;}
+[\n] {PrintCode; new_line++;}
 [\t]+ {PrintCode;}
 }
 %%
-/*[1-9][0-9]* {PrintCode; yylval.integer=atoi(yytext); return POSINT;}*/
