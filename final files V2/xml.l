@@ -46,7 +46,6 @@ int new_line=1;
 ">" {PrintCode; return RIGHTSYMBOL;}
 "/" {PrintCode; return ENDSYMBOL;}
 "\"" {PrintCode; return QUOTES;}
-. {PrintCode; return COMMENT_CHAR;}  //οποιαδήποτε χαρακτήρας
 [1-9][0-9]* {PrintCode; yylval.integer=atoi(yytext); return POSINT;}
 [a-zA-Z0-9_ ]+ {yylval.string=strdup(yytext); PrintCode; return STRING;}
 [\n] {PrintCode;new_line++;}
