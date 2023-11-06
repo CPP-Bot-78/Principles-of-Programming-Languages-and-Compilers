@@ -48,7 +48,6 @@ newline ([\n])
 "\"" {PrintCode; return QUOTES;}
 "<!--" {PrintCode; return STARTCOMMENT;}
 "-->" {PrintCode; return ENDCOMMENT;}
-. {PrintCode; return COMMENT_CHAR;}  //οποιαδήποτε χαρακτήρας
 {nums}   {PrintCode; return POSINT;}
 {strings} {PrintCode; return STRING;}
 \n {new_line++;printf("\n");} 
